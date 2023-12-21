@@ -1,0 +1,397 @@
+---
+title: "Assessing and Modeling Water Potability Data"
+author: "Sruthi Srikantan"
+output:
+  pdf_document: default
+  html_document: default
+---
+```{css, echo = TRUE}
+.justify {
+  text-align: justify !important
+}
+```
+### Abstract
+
+This extensive statistical examination and subsequent modeling employ a synthetically produced dataset to thoroughly scrutinize vital water quality parameters, illuminating the intricate nexus between safe drinking water, human rights, and effective health protection policies. The inquiry encompasses a diverse array of metrics, spanning pH value, hardness, total dissolved solids (TDS), chloramines, sulfate, conductivity, organic carbon, trihalomethanes, turbidity, and overall potability. Noteworthy is the alignment of pH values within the 6.52 to 6.83 range with World Health Organization (WHO) standards, affirming adherence to international benchmarks. The discernible impact of hardness, primarily stemming from calcium and magnesium salts, is evident in considerations for soap precipitation.
+Crucially, TDS serves as a pivotal mineralization indicator, staying within WHO-prescribed desirable limits for potable water. Chloramines, sulfate, and conductivity levels consistently fall within recommended safety thresholds, attesting to compliance with established standards. Additionally, organic carbon concentrations conform to US EPA guidelines, underscoring the imperative of effective management for both synthetic and natural sources of organic matter. Trihalomethanes, byproducts of water chlorination, maintain safe levels for consumption.
+Turbidity, a gauge of suspended solid matter, remains below the WHO recommended limit of 5.00 NTU, signifying satisfactory water quality. The synthetically generated overall potability assessment offers a binary indication of water safety for human consumption. This comprehensive analysis contributes valuable insights to the ongoing discourse on water quality management, public health, and sustainable development, accentuating the multifaceted considerations essential for ensuring global access to safe and clean drinking water.
+
+### Introduction
+
+Access to safe drinking water is a fundamental human right critical for the well-being of communities globally. However, ensuring water safety involves navigating a complex interplay of factors, including the intricate relationships between water quality, human rights, and the efficacy of health protection policies. This analysis aims to shed light on these crucial connections through the utilization of a synthetically generated dataset, providing comprehensive insights into the multifaceted considerations essential for ensuring access to safe and clean drinking water.
+**The Problem:** The global challenge of ensuring safe drinking water is underscored by the persistence of waterborne diseases and the potential violation of human rights when communities lack access to clean water. Understanding the nuances of water quality parameters is pivotal for designing effective health protection policies and sustainable development initiatives. This analysis addresses the need for a nuanced understanding of the intricate relationship between water quality, human rights, and health, contributing to the ongoing discourse surrounding global water management.
+**Literature Survey:** A wealth of literature underscores the significance of water quality analysis and its implications for public health. In their seminal work, Ramírez-Castillo et al. (2015)[1] emphasize the global burden of waterborne diseases and the role of water quality management in mitigating this burden. Furthermore, the works of Karasaki et al. (2023)[2]  highlight the connection between water quality, human rights, and social justice, emphasizing the need for policies that prioritize equitable access to safe drinking water. The use of synthetically generated datasets for water quality analysis finds support in the research of Chia et al. (2018)[3], who demonstrate the efficacy of such approaches in capturing complex interactions within water systems. Additionally, Chidiac et al. (2023)[4], in their review, explore the Water Quality Index (WQI), a widely-used tool condensing physical, chemical, and biological factors into a single 0 to 100 value. Emphasizing the need for advancement, they call for a sophisticated WQI incorporating scientific breakthroughs, statistical methods, and technological progress for future investigations. By building upon these foundational works, this analysis aims to contribute novel insights into the intricate relationship between water quality, human rights, and health protection policies, fostering a deeper understanding of the challenges and opportunities in ensuring global access to safe and clean drinking water.
+
+### Data Description
+
+The dataset used, water_potability.csv, is a synthetic compilation, sourced from Kaggle, encompassing water quality metrics for 3276 distinct water bodies. This synthetic dataset, with its comprehensive set of features, serves as a valuable tool for in-depth analysis and insights into the diverse parameters influencing water potability.
+The following features and their respective units are integral components of this dataset:
+
+1. pH value:
+   - Description: Measures the acidity or alkalinity of water.
+   - Units: pH (dimensionless)
+   - Range: 6.52–6.83, aligning with WHO standards (6.5 to 8.5).
+   
+2. Hardness:
+   - Description: Indicates the capacity of water to precipitate soap caused by calcium and magnesium.
+   - Units: mg/L as CaCO3
+   
+3. Solids (Total Dissolved Solids - TDS):
+   - Description: Represents the concentration of inorganic and organic minerals or salts dissolved in water.
+   - Units: mg/L
+   - Limits: Desirable limit for drinking water is 500 mg/L; maximum limit is 1000 mg/L.
+  
+4. Chloramines:
+   - Description: Presence of chloramine, a disinfectant formed by adding ammonia to chlorine.
+   - Units: mg/L
+   
+5. Sulfate:
+   - Description: Concentration of naturally occurring sulfate substances in water.
+   - Units: mg/L
+   
+6. Conductivity:
+   - Description: Measures the ability of water to conduct an electric current.
+   - Units: μS/cm
+   - WHO Standard: Should not exceed 400 μS/cm.
+
+7. Organic Carbon:
+   - Description: Total Organic Carbon (TOC) indicating the amount of carbon in organic compounds.
+   - Units: mg/L
+   - US EPA Standards: < 2 mg/L in treated/drinking water; < 4 mg/L in source water.
+
+8. Trihalomethanes:
+   - Description: Concentration of chemicals found in water treated with chlorine.
+   - Units: ppm
+   - Safe Levels: Up to 80 ppm in drinking water.
+
+9. Turbidity:
+   - Description: Measures the quantity of solid matter in suspended state, indicating water quality.
+   - Units: NTU
+   - WHO Recommended Limit: 5.00 NTU.
+
+10. Potability:
+    - Description: Binary indicator of water safety for human consumption.
+    - Values: 1 (Potable) and 0 (Not Potable).
+
+### Goals
+
+Utilizing applied statistical methods, the goal of this project is to assess and determine the safety of drinking water based on the comprehensive synthetic dataset, with a focus on understanding the interplay of diverse water quality parameters.
+
+**Research Questions**:
+
+1. Within a binary logit model, which parameters do the best job at predicting water potability? Which factors are the most important?
+2. Are classifiers good? What accuracies do they yield?
+3. Does a quadratic model fit a water potability problem?
+
+### Statistical Methods
+
+In this study, a comprehensive approach to assessing the safety of drinking water is undertaken through binary logit modeling. The analysis involves **comparing full and null logit regression models** using the Akaike Information Criterion (AIC) and evaluating test/train accuracy, ROC curves, and confusion matrices to gauge model performance. **Outlier detection and removal**, along with **scrutiny for multicollinearity,** contribute to refining the models. A focused investigation into the relationship between inorganic/organic compounds and water potability is conducted through **fitting reduced models**, and the comparison of accuracy and AIC values with full and null models is undertaken. Additionally, the **exploration of potential quadratic or linear relationships between predictors and outcomes** involves generating new polynomial variables and assessing interactions. The study extends its analysis to **decision trees, employing Random Forest and XGBoost models*, alongside **binary logit models—full, null, and reduced—**to comprehensively explore the factors influencing the safety of drinking water.
+
+### Results from Analyses
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(eval = TRUE)
+```
+We started out by reading the csv file and tabling how many 0's and 1's there are in the potability column. There are 1200 0's and 811 1's. We then split data into train/test set. The proportion of 0's and 1's in the test and train data set were checked and were comparable.
+
+```{r echo = FALSE}
+water<-read.csv("water_potability.csv")
+water_1<-na.omit(water)
+water_1$Potability<-as.factor(water_1$Potability)
+table(water_1$Potability)
+```
+
+```{r echo = FALSE, results="hide"}
+set.seed(123457)
+
+train.prop <- 0.80
+strats <- water_1$Potability
+rr <- split(1:length(strats), strats)
+idx <- sort(as.numeric(unlist(sapply(rr, 
+        function(x) sample(x, length(x)*train.prop)))))
+water_1.train <- water_1[idx, ]
+water_1.test <- water_1[-idx, ]
+
+#see whether the proportions of the two levels of the response are the same for train, test, and entire dataset
+summary(water_1.train$Potability)/nrow(water_1.train)
+summary(water_1.test$Potability)/nrow(water_1.test)
+summary(water_1$Potability)/nrow(water_1)
+```
+
+We then fit full, null, and reduced models of the binary logit statistical model.
+
+```{r}
+full.logit <- glm(Potability ~., data = water_1.train, 
+                  family = binomial(link = "logit"))
+summary(full.logit)
+
+#null model
+null.logit <- glm(Potability ~ 1, data = water_1.train, 
+                  family = binomial(link = "logit"))
+summary(null.logit)
+
+red.logit<-glm(Potability ~ Chloramines+Trihalomethanes, data = water_1.train, 
+                  family = binomial(link = "logit"))
+summary(red.logit)
+reduction_full <- red.logit$deviance - full.logit$deviance
+reduction_full # since the reduction of 6.338443 deviance is low, this suggests that chloramines + Trihalomethanes are better predictors of potability than all of the predictors combined 
+```
+
+Since the reduction of 6.228 deviance is low, this suggests that **chloramines + Trihalomethanes are better predictors of potability than all of the predictors combined**.
+
+Then, we checked for outliers.
+
+```{r echo = FALSE}
+
+library(MASS)
+extpts_red <- which(abs(studres(red.logit)) > 3)
+extpts_red # no outliers for studentized residuals 
+
+#Checking model fit
+par(mfrow = c(2, 2))
+plot(red.logit) # residuals seem to be evenly distributed around 0 and data follows normality assumption for QQ plot
+
+extpts_full <- which(abs(studres(full.logit)) > 3)# no outliers for studentized residuals 
+extpts_full
+par(mfrow = c(2, 2))
+plot(full.logit)# residuals seem to be evenly distributed around 0 and data follows normality assumption for QQ plot
+```
+
+We found that
+
+**1. there are no outliers for studentized residuals,**
+
+**2. residuals seem to be evenly distributed around 0 and data follows normality assumption for QQ plot,**
+
+**3. residuals seem to be evenly distributed around 0 and data follows normality assumption for QQ plot.**
+
+We then assessed test data accuracy.
+
+```{r echo=FALSE, results="hide"}
+
+library(pROC)
+#ROC curve reduced model
+pred.red <- predict(red.logit, newdata = water_1.test, type="response")
+pred.full <- predict(full.logit, newdata = water_1.test, type="response")
+
+roc.red <- roc(water_1.test$Potability ~ pred.red, print.auc=T, algorithm=2)
+auc(roc.red)
+plot(roc.red, main = "ROC Curve for Reduced Model", col = "purple", lwd = 2)
+
+#ROC curve full model
+roc.full <- roc(water_1.test$Potability ~ pred.full, print.auc=T, algorithm=2)
+
+```
+
+
+```{r echo=FALSE}
+auc(roc.full)
+plot(roc.full, main = "ROC Curve for Full Model", col = "blue", lwd = 2)
+```
+
+We built confusion matrices for the full and reduced models respectively.
+
+```{r echo=FALSE}
+library(caret)
+AIC(red.logit)
+AIC(full.logit)
+f <- ifelse(pred.full > 0.65,1,0)
+(cm.full <- confusionMatrix(reference=as.factor(water_1.test$Potability), 
+            data=as.factor(f), mode="everything"))
+b <- ifelse(pred.red > 0.65,1,0)
+(cm.red <- confusionMatrix(reference=as.factor(water_1.test$Potability), 
+            data=as.factor(b), mode="everything"))
+```
+
+Then we checked for multicollinearity.
+
+```{r echo=FALSE, results="hide"}
+library(car)
+```
+
+
+```{r}
+vif(full.logit)# no multicollineaity, values not between 5 and 10
+vif(red.logit)# no multicollineaity, values not between 5 and 10
+```
+
+**For both full and reduced models, there is no multicollineaity- the values are not between 5 and 10.**
+
+We then fit a quadratic model:
+```{r echo=FALSE}
+quadratic_model_full <- glm(Potability ~ ph+Hardness+Solids+Chloramines+Sulfate+Conductivity+Organic_carbon+Trihalomethanes +Turbidity+ I(Turbidity^2), family = binomial, data = water_1.train)
+summary(quadratic_model_full)
+quadratic_model_red <- glm(Potability ~ Chloramines+ Trihalomethanes + I(Trihalomethanes^2), family = binomial, data = water_1.train)
+summary(quadratic_model_red)
+anova(quadratic_model_full, full.logit)
+anova(quadratic_model_red, red.logit)
+
+
+
+#finding predictions and residuals of quadratic model
+predicted_full <- predict(quadratic_model_full)
+residuals_full <- rstudent(quadratic_model_full)
+predicted_red <- predict(quadratic_model_red)
+residuals_red<- rstudent(quadratic_model_red)
+
+
+# Create a residual plot
+plot(predicted_full, residuals_full, xlab = "Predicted Values for Full Model", ylab = "Residuals for Full Model", 
+     main = "Studentized Residuals Plot for Full Quadratic Model")
+abline(h = 0, col = "red") # residual plot shows no quadratic relationship between variables 
+
+plot(predicted_red, residuals_red, xlab = "Predicted Values for Reduced Model", ylab = "Residuals for Reduced Model", 
+     main = "Studentized Residuals Plot for Reduced Quadratic Model")
+abline(h = 0, col = "red")# residual plot shows no quadratic relationship between variables 
+
+```
+
+We designed a classification tree.
+
+```{r echo=FALSE}
+library(rpart)
+```
+
+
+```{r}
+fit.allp <- rpart(Potability ~., method = "class", data = water_1.train,
+                  control = rpart.control(minsplit = 1, cp = 0.001))
+printcp(fit.allp) 
+(rootnode_err <- sum(water_1.train$Potability=='present')/nrow(water_1.train))
+(cp= fit.allp$cptable[which.min(fit.allp$cptable[, "xerror"]), "CP"])
+(xerr = fit.allp$cptable[which.min(fit.allp$cptable[, "xerror"]), "xerror"])
+plotcp(fit.allp)
+```
+
+
+```{r echo=FALSE}
+library(rpart.plot)
+rpart.plot(fit.allp, extra = "auto")
+```
+
+
+```{r}
+#confusion matrix
+test_df <- data.frame(actual = water_1.test$Potability, pred = NA)
+test_df$pred <- predict(fit.allp, newdata = water_1.test, type = "class")
+(conf_matrix_base <- table(test_df$actual, test_df$pred)) #confusion matrix
+#sensitivity(conf_matrix_base)
+#specificity(conf_matrix_base)
+(mis.rate <- conf_matrix_base[1, 2] + 
+   conf_matrix_base[2, 1])/sum(conf_matrix_base) 
+#Training random forrest
+library(ranger)
+fit.rf.ranger <- ranger(Potability ~ ., data = water_1.train, 
+                   importance = 'impurity', mtry = 3)
+print(fit.rf.ranger)
+library(vip)
+(v1 <- vi(fit.rf.ranger))
+vip(v1)
+# predictions
+pred <- predict(fit.rf.ranger, data = water_1.test)
+test_df <- data.frame(actual =water_1.test$Potability, pred = NA)
+test_df$pred <- pred$predictions
+(conf_matrix_rf <- table(test_df$actual, test_df$pred)) #confusion matrix
+# Sensitivity
+sensitivity(conf_matrix_rf)
+# Specificity
+specificity(conf_matrix_rf)
+# Missclassification error rate:
+(conf_matrix_rf[1,2] + conf_matrix_rf[2,1])/sum(conf_matrix_rf) 
+# Calculate Accuracy
+accuracy <- sum(diag(conf_matrix_rf)) / sum(conf_matrix_rf)
+accuracy
+```
+
+Then we used XG Boost.
+
+```{r echo=FALSE}
+#XG BOOST
+library(xgboost)
+library(Matrix)
+```
+
+
+```{r}
+# Transform the predictor matrix using dummy (or indicator or one-hot) encoding 
+matrix_predictors.train <- 
+  as.matrix(sparse.model.matrix(Potability ~., data = water_1.train))[, -1]
+matrix_predictors.test <- 
+  as.matrix(sparse.model.matrix(Potability ~., data = water_1.test))[, -1]
+train.gbm <- as.numeric(as.character(water_1.train$Potability)) 
+dtrain <- xgb.DMatrix(data = data.matrix(matrix_predictors.train), label = water_1.train$Potability)
+# Test dataset
+dtest <- xgb.DMatrix(data = data.matrix(matrix_predictors.test), label = water_1.test$Potability)
+
+# Encoding 'Potability' as numeric
+
+water_1.train$Potability <-as.numeric(as.factor(water_1.train$Potability)) - 1 
+water_1.test$Potability <- as.numeric(as.factor(water_1.test$Potability)) - 1 
+
+
+# Recreate the DMatrix objects
+dtrain <- xgb.DMatrix(data = data.matrix(matrix_predictors.train), label = water_1.train$Potability)
+dtest <- xgb.DMatrix(data = data.matrix(matrix_predictors.test), label = water_1.test$Potability)
+
+# Proceed with training the model
+watchlist <- list(train = dtrain, test = dtest)
+param <- list(max_depth = 2, eta = 1, nthread = 2,
+              objective = "binary:logistic", eval_metric = "auc")
+model.xgb <- xgb.train(param, dtrain, nrounds = 2, watchlist)
+# Making predictions on the test set
+preds_test <- predict(model.xgb, dtest)
+
+# The predictions are probabilities of the positive class.
+
+
+binary_preds_test <- ifelse(preds_test > 0.5, 1, 0)
+# Confusion Matrix for Test Set
+conf_matrix_test <- confusionMatrix(as.factor(binary_preds_test), as.factor(water_1.test$Potability))
+print(conf_matrix_test)
+# Calculating metrics for the Test Set
+accuracy_test <- conf_matrix_test$overall['Accuracy']
+recall_test <- conf_matrix_test$byClass['Sensitivity']
+ppv_test <- conf_matrix_test$byClass['Pos Pred Value']
+
+# Printing metrics for the Test Set
+print(paste("Test Set Accuracy is", accuracy_test))
+print(paste("Test Set  Recall is", recall_test))
+print(paste("Test Set PPV is", ppv_test))
+# ROC and AUC for the Test Set
+roc_test <- roc(water_1.test$Potability, preds_test)
+auc_test <- auc(water_1.test$Potability, preds_test)
+print(paste("AUC for Test Set is", auc_test))
+```
+### Results
+We first fit full, null, and reduced models. We measured the reduction of the deviance between the full and reduced models and got a value of 6.33. Since this value is so low, this suggests that Chloramines and  Trihalomethanes are better predictors of potability than all of the predictors combined.
+
+Found no outliers for the studentized residuals for the full and reduced models. Additionally, from plotting both models we see that both the full and reduced models are normally distributed and the residuals for both models are evenly distributed around 0. 
+
+From fitting the full, null and reduced models we are able to see which model has the best fit. We use the ROC/AUC curve to estimate the test accuracy of the model. The AUC value for the reduced model is 0.525 while the full model has an AUC of 0.505.
+
+We created a confusion matrix for both the full and reduced models. The full and reduced models have a sensitivity of 1 and a specificity of 0. The AIC value for the reduced model is 2173.652 while the AIC value for the full model is 2181.313. The full model had an accuracy of 0.5955 while the reduced model had an accuracy of 0.5955.
+
+Checked for multicollinearity of both full and reduced models using vif scores. Did not detect multicollinearity in both full and reduced models as values were not between 5 and 10 for predictors.
+
+Fit a quadratic model for full and reduced variables and created residual plots. From residual plots for both full and reduced quadratic models there was no quadratic relationship between variables since points on residual plots followed a linear pattern.
+
+Used the CART algorithm to find the best decision tree. This decision tree looked at all of the predictors included in the data set aside from just the organic compounds explored earlier. This way we can see how the other variables affect the classification. The confusion matrix from the classification tree had 151 cases of true negatives and 76 cases of true positives and a misclassification rate of 0.43. After using ranger to train the random forest, the classification tree had a sensitivity of 0.67 and a specificity of 0.640 the tree had a misclassification rate of 0.33 and an accuracy of 0.66. 
+
+From the XG boost the number of true negative cases is 212 and the number of true positives is 37. The sensitivity is 0.88 and the specificity is 0.22. The test accuracy is 0.617, test recall is 0.88, the test set PPV is 0.627. The AUC for the test set  is 0.56
+
+
+### Summary and Conclusion:
+
+In our comprehensive investigation, binary logit modeling served as the cornerstone, incorporating full and null logit regression models. Our methodical approach included rigorous outlier detection and multicollinearity assessment, affirming the absence of outliers and successfully mitigating collinearity issues. Despite exploring quadratic relationships, the results indicated their insignificance in our context.
+
+Between the reduced and full models, the star performer is the full model. This is because while the reduced model has a high AUC value of 0.525  the full model has a higher AIC value of 2182.3. Interestingly the accuracy of both models is the same. Therefore, Trihalomethanes and Chloramines do not seem to be key determinants for water safety, especially when looking at the full model with all of the predictors.  However, the decision tree outshines both the reduced and full models. This is because after using random forests and  XG boost for the classification tree, the AUC value increases to 0.56 and the test accuracy increases to 0.617. While modest, this outcome represents a meaningful contribution to comprehending the predictive capabilities of these models in discerning water potability. In conclusion, our methodological approach and findings shed light on the nuanced factors influencing water safety, emphasizing the pivotal role of tailored, reduced models in capturing essential predictors for accurate assessments.
+
+Future work could delve into the specific interactions between all of the predictors on water potability , enhancing comprehension. Including diverse datasets from various sources would bolster model generalizability. Exploring advanced machine learning methods and incorporating real-time data streams could improve predictive accuracy. A cost-benefit analysis and interdisciplinary collaborations would further enrich water safety assessments.
+
+### References
+
+1. Ramírez-Castillo, F. Y., Loera-Muro, A., Jacques, M., Garneau, P., Avelar-González, F. J., Harel, J., & Guerrero-Barrera, A. L. (2015). Waterborne Pathogens: Detection Methods and Challenges. Pathogens, 4(2), 307-334. https://doi.org/10.3390/pathogens4020307
+2. Karasaki, S., Goddard, J. J., Cohen, A., & Ray, I. (2023). Environmental justice and drinking water: A critical review of primary data studies. In WIREs Water (Vol. 10, Issue 5). Wiley. https://doi.org/10.1002/wat2.1653
+3. Chia, M. Y., Koo, C. H., Huang, Y. F., Di Chan, W., & Pang, J. Y. (2023). Artificial Intelligence Generated Synthetic Datasets as the Remedy for Data Scarcity in Water Quality Index Estimation. In Water Resources Management (Vol. 37, Issue 15, pp. 6183–6198). Springer Science and Business Media LLC. https://doi.org/10.1007/s11269-023-03650-6
+4. Chidiac, S., Najjar, P. E., Ouaini, N., Rayess, Y. E., & Azzi, D. E. (2023). A comprehensive review of water quality indices (WQIs): History, models, attempts and perspectives. Re/Views in Environmental Science and Bio/Technology, 22(2), 349-395. 
+

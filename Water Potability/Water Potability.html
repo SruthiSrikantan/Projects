@@ -1,0 +1,1081 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.433">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Sruthi Srikantan">
+
+<title>Assessing and Modeling Water Potability Data</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="Water Potability_files/libs/clipboard/clipboard.min.js"></script>
+<script src="Water Potability_files/libs/quarto-html/quarto.js"></script>
+<script src="Water Potability_files/libs/quarto-html/popper.min.js"></script>
+<script src="Water Potability_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="Water Potability_files/libs/quarto-html/anchor.min.js"></script>
+<link href="Water Potability_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="Water Potability_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="Water Potability_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="Water Potability_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="Water Potability_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+
+
+</head>
+
+<body class="fullcontent">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Assessing and Modeling Water Potability Data</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Sruthi Srikantan </p>
+          </div>
+  </div>
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode css code-with-copy"><code class="sourceCode css"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">.justify</span> {</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">text-align</span>: <span class="dv">justify</span> <span class="at">!important</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<style type="text/css">
+.justify {
+  text-align: justify !important
+}
+</style>
+</div>
+<section id="abstract" class="level3">
+<h3 class="anchored" data-anchor-id="abstract">Abstract</h3>
+<p>This extensive statistical examination and subsequent modeling employ a synthetically produced dataset to thoroughly scrutinize vital water quality parameters, illuminating the intricate nexus between safe drinking water, human rights, and effective health protection policies. The inquiry encompasses a diverse array of metrics, spanning pH value, hardness, total dissolved solids (TDS), chloramines, sulfate, conductivity, organic carbon, trihalomethanes, turbidity, and overall potability. Noteworthy is the alignment of pH values within the 6.52 to 6.83 range with World Health Organization (WHO) standards, affirming adherence to international benchmarks. The discernible impact of hardness, primarily stemming from calcium and magnesium salts, is evident in considerations for soap precipitation. Crucially, TDS serves as a pivotal mineralization indicator, staying within WHO-prescribed desirable limits for potable water. Chloramines, sulfate, and conductivity levels consistently fall within recommended safety thresholds, attesting to compliance with established standards. Additionally, organic carbon concentrations conform to US EPA guidelines, underscoring the imperative of effective management for both synthetic and natural sources of organic matter. Trihalomethanes, byproducts of water chlorination, maintain safe levels for consumption. Turbidity, a gauge of suspended solid matter, remains below the WHO recommended limit of 5.00 NTU, signifying satisfactory water quality. The synthetically generated overall potability assessment offers a binary indication of water safety for human consumption. This comprehensive analysis contributes valuable insights to the ongoing discourse on water quality management, public health, and sustainable development, accentuating the multifaceted considerations essential for ensuring global access to safe and clean drinking water.</p>
+</section>
+<section id="introduction" class="level3">
+<h3 class="anchored" data-anchor-id="introduction">Introduction</h3>
+<p>Access to safe drinking water is a fundamental human right critical for the well-being of communities globally. However, ensuring water safety involves navigating a complex interplay of factors, including the intricate relationships between water quality, human rights, and the efficacy of health protection policies. This analysis aims to shed light on these crucial connections through the utilization of a synthetically generated dataset, providing comprehensive insights into the multifaceted considerations essential for ensuring access to safe and clean drinking water. <strong>The Problem:</strong> The global challenge of ensuring safe drinking water is underscored by the persistence of waterborne diseases and the potential violation of human rights when communities lack access to clean water. Understanding the nuances of water quality parameters is pivotal for designing effective health protection policies and sustainable development initiatives. This analysis addresses the need for a nuanced understanding of the intricate relationship between water quality, human rights, and health, contributing to the ongoing discourse surrounding global water management. <strong>Literature Survey:</strong> A wealth of literature underscores the significance of water quality analysis and its implications for public health. In their seminal work, Ramírez-Castillo et al.&nbsp;(2015)[1] emphasize the global burden of waterborne diseases and the role of water quality management in mitigating this burden. Furthermore, the works of Karasaki et al.&nbsp;(2023)[2] highlight the connection between water quality, human rights, and social justice, emphasizing the need for policies that prioritize equitable access to safe drinking water. The use of synthetically generated datasets for water quality analysis finds support in the research of Chia et al.&nbsp;(2018)[3], who demonstrate the efficacy of such approaches in capturing complex interactions within water systems. Additionally, Chidiac et al.&nbsp;(2023)[4], in their review, explore the Water Quality Index (WQI), a widely-used tool condensing physical, chemical, and biological factors into a single 0 to 100 value. Emphasizing the need for advancement, they call for a sophisticated WQI incorporating scientific breakthroughs, statistical methods, and technological progress for future investigations. By building upon these foundational works, this analysis aims to contribute novel insights into the intricate relationship between water quality, human rights, and health protection policies, fostering a deeper understanding of the challenges and opportunities in ensuring global access to safe and clean drinking water.</p>
+</section>
+<section id="data-description" class="level3">
+<h3 class="anchored" data-anchor-id="data-description">Data Description</h3>
+<p>The dataset used, water_potability.csv, is a synthetic compilation, sourced from Kaggle, encompassing water quality metrics for 3276 distinct water bodies. This synthetic dataset, with its comprehensive set of features, serves as a valuable tool for in-depth analysis and insights into the diverse parameters influencing water potability. The following features and their respective units are integral components of this dataset:</p>
+<ol type="1">
+<li>pH value:
+<ul>
+<li>Description: Measures the acidity or alkalinity of water.</li>
+<li>Units: pH (dimensionless)</li>
+<li>Range: 6.52–6.83, aligning with WHO standards (6.5 to 8.5).</li>
+</ul></li>
+<li>Hardness:
+<ul>
+<li>Description: Indicates the capacity of water to precipitate soap caused by calcium and magnesium.</li>
+<li>Units: mg/L as CaCO3</li>
+</ul></li>
+<li>Solids (Total Dissolved Solids - TDS):
+<ul>
+<li>Description: Represents the concentration of inorganic and organic minerals or salts dissolved in water.</li>
+<li>Units: mg/L</li>
+<li>Limits: Desirable limit for drinking water is 500 mg/L; maximum limit is 1000 mg/L.</li>
+</ul></li>
+<li>Chloramines:
+<ul>
+<li>Description: Presence of chloramine, a disinfectant formed by adding ammonia to chlorine.</li>
+<li>Units: mg/L</li>
+</ul></li>
+<li>Sulfate:
+<ul>
+<li>Description: Concentration of naturally occurring sulfate substances in water.</li>
+<li>Units: mg/L</li>
+</ul></li>
+<li>Conductivity:
+<ul>
+<li>Description: Measures the ability of water to conduct an electric current.</li>
+<li>Units: μS/cm</li>
+<li>WHO Standard: Should not exceed 400 μS/cm.</li>
+</ul></li>
+<li>Organic Carbon:
+<ul>
+<li>Description: Total Organic Carbon (TOC) indicating the amount of carbon in organic compounds.</li>
+<li>Units: mg/L</li>
+<li>US EPA Standards: &lt; 2 mg/L in treated/drinking water; &lt; 4 mg/L in source water.</li>
+</ul></li>
+<li>Trihalomethanes:
+<ul>
+<li>Description: Concentration of chemicals found in water treated with chlorine.</li>
+<li>Units: ppm</li>
+<li>Safe Levels: Up to 80 ppm in drinking water.</li>
+</ul></li>
+<li>Turbidity:
+<ul>
+<li>Description: Measures the quantity of solid matter in suspended state, indicating water quality.</li>
+<li>Units: NTU</li>
+<li>WHO Recommended Limit: 5.00 NTU.</li>
+</ul></li>
+<li>Potability:
+<ul>
+<li>Description: Binary indicator of water safety for human consumption.</li>
+<li>Values: 1 (Potable) and 0 (Not Potable).</li>
+</ul></li>
+</ol>
+</section>
+<section id="goals" class="level3">
+<h3 class="anchored" data-anchor-id="goals">Goals</h3>
+<p>Utilizing applied statistical methods, the goal of this project is to assess and determine the safety of drinking water based on the comprehensive synthetic dataset, with a focus on understanding the interplay of diverse water quality parameters.</p>
+<p><strong>Research Questions</strong>:</p>
+<ol type="1">
+<li>Within a binary logit model, which parameters do the best job at predicting water potability? Which factors are the most important?</li>
+<li>Are classifiers good? What accuracies do they yield?</li>
+<li>Does a quadratic model fit a water potability problem?</li>
+</ol>
+</section>
+<section id="statistical-methods" class="level3">
+<h3 class="anchored" data-anchor-id="statistical-methods">Statistical Methods</h3>
+<p>In this study, a comprehensive approach to assessing the safety of drinking water is undertaken through binary logit modeling. The analysis involves <strong>comparing full and null logit regression models</strong> using the Akaike Information Criterion (AIC) and evaluating test/train accuracy, ROC curves, and confusion matrices to gauge model performance. <strong>Outlier detection and removal</strong>, along with <strong>scrutiny for multicollinearity,</strong> contribute to refining the models. A focused investigation into the relationship between inorganic/organic compounds and water potability is conducted through <strong>fitting reduced models</strong>, and the comparison of accuracy and AIC values with full and null models is undertaken. Additionally, the <strong>exploration of potential quadratic or linear relationships between predictors and outcomes</strong> involves generating new polynomial variables and assessing interactions. The study extends its analysis to **decision trees, employing Random Forest and XGBoost models*, alongside <strong>binary logit models—full, null, and reduced—</strong>to comprehensively explore the factors influencing the safety of drinking water.</p>
+</section>
+<section id="results-from-analyses" class="level3">
+<h3 class="anchored" data-anchor-id="results-from-analyses">Results from Analyses</h3>
+<p>We started out by reading the csv file and tabling how many 0’s and 1’s there are in the potability column. There are 1200 0’s and 811 1’s. We then split data into train/test set. The proportion of 0’s and 1’s in the test and train data set were checked and were comparable.</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>
+   0    1 
+1200  811 </code></pre>
+</div>
+</div>
+<p>We then fit full, null, and reduced models of the binary logit statistical model.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>full.logit <span class="ot">&lt;-</span> <span class="fu">glm</span>(Potability <span class="sc">~</span>., <span class="at">data =</span> water_1.train, </span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>                  <span class="at">family =</span> <span class="fu">binomial</span>(<span class="at">link =</span> <span class="st">"logit"</span>))</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(full.logit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+glm(formula = Potability ~ ., family = binomial(link = "logit"), 
+    data = water_1.train)
+
+Coefficients:
+                  Estimate Std. Error z value Pr(&gt;|z|)
+(Intercept)     -5.022e-01  8.388e-01  -0.599    0.549
+ph               3.198e-02  3.254e-02   0.983    0.326
+Hardness        -2.960e-04  1.585e-03  -0.187    0.852
+Solids           7.612e-06  6.044e-06   1.259    0.208
+Chloramines      2.428e-02  3.182e-02   0.763    0.445
+Sulfate         -1.227e-03  1.265e-03  -0.970    0.332
+Conductivity    -4.291e-04  6.368e-04  -0.674    0.500
+Organic_carbon  -1.089e-02  1.522e-02  -0.716    0.474
+Trihalomethanes  4.648e-04  3.161e-03   0.147    0.883
+Turbidity        7.989e-02  6.562e-02   1.218    0.223
+
+(Dispersion parameter for binomial family taken to be 1)
+
+    Null deviance: 2168.2  on 1607  degrees of freedom
+Residual deviance: 2161.3  on 1598  degrees of freedom
+AIC: 2181.3
+
+Number of Fisher Scoring iterations: 4</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co">#null model</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>null.logit <span class="ot">&lt;-</span> <span class="fu">glm</span>(Potability <span class="sc">~</span> <span class="dv">1</span>, <span class="at">data =</span> water_1.train, </span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>                  <span class="at">family =</span> <span class="fu">binomial</span>(<span class="at">link =</span> <span class="st">"logit"</span>))</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(null.logit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+glm(formula = Potability ~ 1, family = binomial(link = "logit"), 
+    data = water_1.train)
+
+Coefficients:
+            Estimate Std. Error z value Pr(&gt;|z|)    
+(Intercept) -0.39304    0.05084  -7.731 1.07e-14 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+(Dispersion parameter for binomial family taken to be 1)
+
+    Null deviance: 2168.2  on 1607  degrees of freedom
+Residual deviance: 2168.2  on 1607  degrees of freedom
+AIC: 2170.2
+
+Number of Fisher Scoring iterations: 4</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>red.logit<span class="ot">&lt;-</span><span class="fu">glm</span>(Potability <span class="sc">~</span> Chloramines<span class="sc">+</span>Trihalomethanes, <span class="at">data =</span> water_1.train, </span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>                  <span class="at">family =</span> <span class="fu">binomial</span>(<span class="at">link =</span> <span class="st">"logit"</span>))</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(red.logit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+glm(formula = Potability ~ Chloramines + Trihalomethanes, family = binomial(link = "logit"), 
+    data = water_1.train)
+
+Coefficients:
+                  Estimate Std. Error z value Pr(&gt;|z|)  
+(Intercept)     -0.5987051  0.3098081  -1.933   0.0533 .
+Chloramines      0.0234506  0.0316753   0.740   0.4591  
+Trihalomethanes  0.0005803  0.0031470   0.184   0.8537  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+(Dispersion parameter for binomial family taken to be 1)
+
+    Null deviance: 2168.2  on 1607  degrees of freedom
+Residual deviance: 2167.7  on 1605  degrees of freedom
+AIC: 2173.7
+
+Number of Fisher Scoring iterations: 4</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>reduction_full <span class="ot">&lt;-</span> red.logit<span class="sc">$</span>deviance <span class="sc">-</span> full.logit<span class="sc">$</span>deviance</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>reduction_full <span class="co"># since the reduction of 6.338443 deviance is low, this suggests that chloramines + Trihalomethanes are better predictors of potability than all of the predictors combined </span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 6.338443</code></pre>
+</div>
+</div>
+<p>Since the reduction of 6.228 deviance is low, this suggests that <strong>chloramines + Trihalomethanes are better predictors of potability than all of the predictors combined</strong>.</p>
+<p>Then, we checked for outliers.</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>named integer(0)</code></pre>
+</div>
+<div class="cell-output-display">
+<p><img src="Water-Potability_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>named integer(0)</code></pre>
+</div>
+<div class="cell-output-display">
+<p><img src="Water-Potability_files/figure-html/unnamed-chunk-5-2.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>We found that</p>
+<p><strong>1. there are no outliers for studentized residuals,</strong></p>
+<p><strong>2. residuals seem to be evenly distributed around 0 and data follows normality assumption for QQ plot,</strong></p>
+<p><strong>3. residuals seem to be evenly distributed around 0 and data follows normality assumption for QQ plot.</strong></p>
+<p>We then assessed test data accuracy.</p>
+<div class="cell">
+<div class="cell-output cell-output-stderr">
+<pre><code>Type 'citation("pROC")' for a citation.</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Attaching package: 'pROC'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following objects are masked from 'package:stats':
+
+    cov, smooth, var</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Setting levels: control = 0, case = 1</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Setting direction: controls &lt; cases</code></pre>
+</div>
+<div class="cell-output-display">
+<p><img src="Water-Potability_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Setting levels: control = 0, case = 1</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Setting direction: controls &gt; cases</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>Area under the curve: 0.505</code></pre>
+</div>
+<div class="cell-output-display">
+<p><img src="Water-Potability_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>We built confusion matrices for the full and reduced models respectively.</p>
+<div class="cell">
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: ggplot2</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: lattice</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 2173.652</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 2181.313</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in confusionMatrix.default(reference =
+as.factor(water_1.test$Potability), : Levels are not in the same order for
+reference and data. Refactoring data to match.</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Confusion Matrix and Statistics
+
+          Reference
+Prediction   0   1
+         0 240 163
+         1   0   0
+                                          
+               Accuracy : 0.5955          
+                 95% CI : (0.5458, 0.6438)
+    No Information Rate : 0.5955          
+    P-Value [Acc &gt; NIR] : 0.5215          
+                                          
+                  Kappa : 0               
+                                          
+ Mcnemar's Test P-Value : &lt;2e-16          
+                                          
+            Sensitivity : 1.0000          
+            Specificity : 0.0000          
+         Pos Pred Value : 0.5955          
+         Neg Pred Value :    NaN          
+              Precision : 0.5955          
+                 Recall : 1.0000          
+                     F1 : 0.7465          
+             Prevalence : 0.5955          
+         Detection Rate : 0.5955          
+   Detection Prevalence : 1.0000          
+      Balanced Accuracy : 0.5000          
+                                          
+       'Positive' Class : 0               
+                                          </code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in confusionMatrix.default(reference =
+as.factor(water_1.test$Potability), : Levels are not in the same order for
+reference and data. Refactoring data to match.</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Confusion Matrix and Statistics
+
+          Reference
+Prediction   0   1
+         0 240 163
+         1   0   0
+                                          
+               Accuracy : 0.5955          
+                 95% CI : (0.5458, 0.6438)
+    No Information Rate : 0.5955          
+    P-Value [Acc &gt; NIR] : 0.5215          
+                                          
+                  Kappa : 0               
+                                          
+ Mcnemar's Test P-Value : &lt;2e-16          
+                                          
+            Sensitivity : 1.0000          
+            Specificity : 0.0000          
+         Pos Pred Value : 0.5955          
+         Neg Pred Value :    NaN          
+              Precision : 0.5955          
+                 Recall : 1.0000          
+                     F1 : 0.7465          
+             Prevalence : 0.5955          
+         Detection Rate : 0.5955          
+   Detection Prevalence : 1.0000          
+      Balanced Accuracy : 0.5000          
+                                          
+       'Positive' Class : 0               
+                                          </code></pre>
+</div>
+</div>
+<p>Then we checked for multicollinearity.</p>
+<div class="cell">
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: carData</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">vif</span>(full.logit)<span class="co"># no multicollineaity, values not between 5 and 10</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>             ph        Hardness          Solids     Chloramines         Sulfate 
+       1.022459        1.036600        1.040561        1.005195        1.052557 
+   Conductivity  Organic_carbon Trihalomethanes       Turbidity 
+       1.003233        1.002914        1.004440        1.005812 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">vif</span>(red.logit)<span class="co"># no multicollineaity, values not between 5 and 10</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>    Chloramines Trihalomethanes 
+       1.000209        1.000209 </code></pre>
+</div>
+</div>
+<p><strong>For both full and reduced models, there is no multicollineaity- the values are not between 5 and 10.</strong></p>
+<p>We then fit a quadratic model:</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+glm(formula = Potability ~ ph + Hardness + Solids + Chloramines + 
+    Sulfate + Conductivity + Organic_carbon + Trihalomethanes + 
+    Turbidity + I(Turbidity^2), family = binomial, data = water_1.train)
+
+Coefficients:
+                  Estimate Std. Error z value Pr(&gt;|z|)
+(Intercept)     -1.274e+00  1.228e+00  -1.038    0.299
+ph               3.187e-02  3.255e-02   0.979    0.327
+Hardness        -2.961e-04  1.585e-03  -0.187    0.852
+Solids           7.584e-06  6.047e-06   1.254    0.210
+Chloramines      2.318e-02  3.186e-02   0.728    0.467
+Sulfate         -1.263e-03  1.266e-03  -0.998    0.318
+Conductivity    -4.243e-04  6.369e-04  -0.666    0.505
+Organic_carbon  -1.124e-02  1.523e-02  -0.738    0.461
+Trihalomethanes  4.465e-04  3.162e-03   0.141    0.888
+Turbidity        4.966e-01  4.877e-01   1.018    0.309
+I(Turbidity^2)  -5.240e-02  6.074e-02  -0.863    0.388
+
+(Dispersion parameter for binomial family taken to be 1)
+
+    Null deviance: 2168.2  on 1607  degrees of freedom
+Residual deviance: 2160.6  on 1597  degrees of freedom
+AIC: 2182.6
+
+Number of Fisher Scoring iterations: 4</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+glm(formula = Potability ~ Chloramines + Trihalomethanes + I(Trihalomethanes^2), 
+    family = binomial, data = water_1.train)
+
+Coefficients:
+                       Estimate Std. Error z value Pr(&gt;|z|)
+(Intercept)          -4.921e-01  6.253e-01  -0.787    0.431
+Chloramines           2.338e-02  3.168e-02   0.738    0.460
+Trihalomethanes      -2.847e-03  1.775e-02  -0.160    0.873
+I(Trihalomethanes^2)  2.601e-05  1.326e-04   0.196    0.844
+
+(Dispersion parameter for binomial family taken to be 1)
+
+    Null deviance: 2168.2  on 1607  degrees of freedom
+Residual deviance: 2167.6  on 1604  degrees of freedom
+AIC: 2175.6
+
+Number of Fisher Scoring iterations: 4</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Analysis of Deviance Table
+
+Model 1: Potability ~ ph + Hardness + Solids + Chloramines + Sulfate + 
+    Conductivity + Organic_carbon + Trihalomethanes + Turbidity + 
+    I(Turbidity^2)
+Model 2: Potability ~ ph + Hardness + Solids + Chloramines + Sulfate + 
+    Conductivity + Organic_carbon + Trihalomethanes + Turbidity
+  Resid. Df Resid. Dev Df Deviance
+1      1597     2160.6            
+2      1598     2161.3 -1 -0.75241</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Analysis of Deviance Table
+
+Model 1: Potability ~ Chloramines + Trihalomethanes + I(Trihalomethanes^2)
+Model 2: Potability ~ Chloramines + Trihalomethanes
+  Resid. Df Resid. Dev Df  Deviance
+1      1604     2167.6             
+2      1605     2167.7 -1 -0.038438</code></pre>
+</div>
+<div class="cell-output-display">
+<p><img src="Water-Potability_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="Water-Potability_files/figure-html/unnamed-chunk-11-2.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>We designed a classification tree.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>fit.allp <span class="ot">&lt;-</span> <span class="fu">rpart</span>(Potability <span class="sc">~</span>., <span class="at">method =</span> <span class="st">"class"</span>, <span class="at">data =</span> water_1.train,</span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>                  <span class="at">control =</span> <span class="fu">rpart.control</span>(<span class="at">minsplit =</span> <span class="dv">1</span>, <span class="at">cp =</span> <span class="fl">0.001</span>))</span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a><span class="fu">printcp</span>(fit.allp) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Classification tree:
+rpart(formula = Potability ~ ., data = water_1.train, method = "class", 
+    control = rpart.control(minsplit = 1, cp = 0.001))
+
+Variables actually used in tree construction:
+[1] Chloramines     Conductivity    Hardness        Organic_carbon 
+[5] ph              Solids          Sulfate         Trihalomethanes
+[9] Turbidity      
+
+Root node error: 648/1608 = 0.40299
+
+n= 1608 
+
+          CP nsplit rel error  xerror     xstd
+1  0.0462963      0  1.000000 1.00000 0.030353
+2  0.0339506      1  0.953704 0.97531 0.030225
+3  0.0246914      3  0.885802 0.92438 0.029919
+4  0.0216049      7  0.783951 0.91358 0.029846
+5  0.0108025      8  0.762346 0.86111 0.029457
+6  0.0092593     11  0.729938 0.85494 0.029407
+7  0.0077160     13  0.711420 0.85802 0.029433
+8  0.0069444     21  0.641975 0.85494 0.029407
+9  0.0061728     28  0.591049 0.84105 0.029292
+10 0.0046296     30  0.578704 0.84722 0.029344
+11 0.0038580     46  0.503086 0.89506 0.029716
+12 0.0030864     58  0.450617 0.89506 0.029716
+13 0.0025720     99  0.313272 0.90741 0.029804
+14 0.0023148    102  0.305556 0.91512 0.029857
+15 0.0020576    121  0.259259 0.91975 0.029888
+16 0.0015432    124  0.253086 0.91975 0.029888
+17 0.0010000    254  0.046296 0.93364 0.029979</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>(rootnode_err <span class="ot">&lt;-</span> <span class="fu">sum</span>(water_1.train<span class="sc">$</span>Potability<span class="sc">==</span><span class="st">'present'</span>)<span class="sc">/</span><span class="fu">nrow</span>(water_1.train))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>(<span class="at">cp=</span> fit.allp<span class="sc">$</span>cptable[<span class="fu">which.min</span>(fit.allp<span class="sc">$</span>cptable[, <span class="st">"xerror"</span>]), <span class="st">"CP"</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.00617284</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>(<span class="at">xerr =</span> fit.allp<span class="sc">$</span>cptable[<span class="fu">which.min</span>(fit.allp<span class="sc">$</span>cptable[, <span class="st">"xerror"</span>]), <span class="st">"xerror"</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.8410494</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plotcp</span>(fit.allp)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="Water-Potability_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: labs do not fit even at cex 0.15, there may be some overplotting</code></pre>
+</div>
+<div class="cell-output-display">
+<p><img src="Water-Potability_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="co">#confusion matrix</span></span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a>test_df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">actual =</span> water_1.test<span class="sc">$</span>Potability, <span class="at">pred =</span> <span class="cn">NA</span>)</span>
+<span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a>test_df<span class="sc">$</span>pred <span class="ot">&lt;-</span> <span class="fu">predict</span>(fit.allp, <span class="at">newdata =</span> water_1.test, <span class="at">type =</span> <span class="st">"class"</span>)</span>
+<span id="cb48-4"><a href="#cb48-4" aria-hidden="true" tabindex="-1"></a>(conf_matrix_base <span class="ot">&lt;-</span> <span class="fu">table</span>(test_df<span class="sc">$</span>actual, test_df<span class="sc">$</span>pred)) <span class="co">#confusion matrix</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   
+      0   1
+  0 151  89
+  1  87  76</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="co">#sensitivity(conf_matrix_base)</span></span>
+<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a><span class="co">#specificity(conf_matrix_base)</span></span>
+<span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a>(mis.rate <span class="ot">&lt;-</span> conf_matrix_base[<span class="dv">1</span>, <span class="dv">2</span>] <span class="sc">+</span> </span>
+<span id="cb50-4"><a href="#cb50-4" aria-hidden="true" tabindex="-1"></a>   conf_matrix_base[<span class="dv">2</span>, <span class="dv">1</span>])<span class="sc">/</span><span class="fu">sum</span>(conf_matrix_base) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.4367246</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Training random forrest</span></span>
+<span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ranger)</span>
+<span id="cb52-3"><a href="#cb52-3" aria-hidden="true" tabindex="-1"></a>fit.rf.ranger <span class="ot">&lt;-</span> <span class="fu">ranger</span>(Potability <span class="sc">~</span> ., <span class="at">data =</span> water_1.train, </span>
+<span id="cb52-4"><a href="#cb52-4" aria-hidden="true" tabindex="-1"></a>                   <span class="at">importance =</span> <span class="st">'impurity'</span>, <span class="at">mtry =</span> <span class="dv">3</span>)</span>
+<span id="cb52-5"><a href="#cb52-5" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(fit.rf.ranger)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Ranger result
+
+Call:
+ ranger(Potability ~ ., data = water_1.train, importance = "impurity",      mtry = 3) 
+
+Type:                             Classification 
+Number of trees:                  500 
+Sample size:                      1608 
+Number of independent variables:  9 
+Mtry:                             3 
+Target node size:                 1 
+Variable importance mode:         impurity 
+Splitrule:                        gini 
+OOB prediction error:             31.59 % </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb54"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(vip)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Attaching package: 'vip'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following object is masked from 'package:utils':
+
+    vi</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb57"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a>(v1 <span class="ot">&lt;-</span> <span class="fu">vi</span>(fit.rf.ranger))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 9 × 2
+  Variable        Importance
+  &lt;chr&gt;                &lt;dbl&gt;
+1 Sulfate              116. 
+2 ph                   108. 
+3 Chloramines           92.0
+4 Hardness              88.5
+5 Solids                85.8
+6 Conductivity          73.4
+7 Trihalomethanes       70.0
+8 Turbidity             69.9
+9 Organic_carbon        69.8</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb59"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a><span class="fu">vip</span>(v1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="Water-Potability_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="sourceCode cell-code" id="cb60"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a><span class="co"># predictions</span></span>
+<span id="cb60-2"><a href="#cb60-2" aria-hidden="true" tabindex="-1"></a>pred <span class="ot">&lt;-</span> <span class="fu">predict</span>(fit.rf.ranger, <span class="at">data =</span> water_1.test)</span>
+<span id="cb60-3"><a href="#cb60-3" aria-hidden="true" tabindex="-1"></a>test_df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">actual =</span>water_1.test<span class="sc">$</span>Potability, <span class="at">pred =</span> <span class="cn">NA</span>)</span>
+<span id="cb60-4"><a href="#cb60-4" aria-hidden="true" tabindex="-1"></a>test_df<span class="sc">$</span>pred <span class="ot">&lt;-</span> pred<span class="sc">$</span>predictions</span>
+<span id="cb60-5"><a href="#cb60-5" aria-hidden="true" tabindex="-1"></a>(conf_matrix_rf <span class="ot">&lt;-</span> <span class="fu">table</span>(test_df<span class="sc">$</span>actual, test_df<span class="sc">$</span>pred)) <span class="co">#confusion matrix</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   
+      0   1
+  0 203  37
+  1  97  66</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb62"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Sensitivity</span></span>
+<span id="cb62-2"><a href="#cb62-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sensitivity</span>(conf_matrix_rf)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.6766667</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb64"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Specificity</span></span>
+<span id="cb64-2"><a href="#cb64-2" aria-hidden="true" tabindex="-1"></a><span class="fu">specificity</span>(conf_matrix_rf)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.6407767</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb66"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb66-1"><a href="#cb66-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Missclassification error rate:</span></span>
+<span id="cb66-2"><a href="#cb66-2" aria-hidden="true" tabindex="-1"></a>(conf_matrix_rf[<span class="dv">1</span>,<span class="dv">2</span>] <span class="sc">+</span> conf_matrix_rf[<span class="dv">2</span>,<span class="dv">1</span>])<span class="sc">/</span><span class="fu">sum</span>(conf_matrix_rf) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.3325062</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb68"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb68-1"><a href="#cb68-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate Accuracy</span></span>
+<span id="cb68-2"><a href="#cb68-2" aria-hidden="true" tabindex="-1"></a>accuracy <span class="ot">&lt;-</span> <span class="fu">sum</span>(<span class="fu">diag</span>(conf_matrix_rf)) <span class="sc">/</span> <span class="fu">sum</span>(conf_matrix_rf)</span>
+<span id="cb68-3"><a href="#cb68-3" aria-hidden="true" tabindex="-1"></a>accuracy</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.6674938</code></pre>
+</div>
+</div>
+<p>Then we used XG Boost.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb70"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb70-1"><a href="#cb70-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Transform the predictor matrix using dummy (or indicator or one-hot) encoding </span></span>
+<span id="cb70-2"><a href="#cb70-2" aria-hidden="true" tabindex="-1"></a>matrix_predictors.train <span class="ot">&lt;-</span> </span>
+<span id="cb70-3"><a href="#cb70-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.matrix</span>(<span class="fu">sparse.model.matrix</span>(Potability <span class="sc">~</span>., <span class="at">data =</span> water_1.train))[, <span class="sc">-</span><span class="dv">1</span>]</span>
+<span id="cb70-4"><a href="#cb70-4" aria-hidden="true" tabindex="-1"></a>matrix_predictors.test <span class="ot">&lt;-</span> </span>
+<span id="cb70-5"><a href="#cb70-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.matrix</span>(<span class="fu">sparse.model.matrix</span>(Potability <span class="sc">~</span>., <span class="at">data =</span> water_1.test))[, <span class="sc">-</span><span class="dv">1</span>]</span>
+<span id="cb70-6"><a href="#cb70-6" aria-hidden="true" tabindex="-1"></a>train.gbm <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(<span class="fu">as.character</span>(water_1.train<span class="sc">$</span>Potability)) </span>
+<span id="cb70-7"><a href="#cb70-7" aria-hidden="true" tabindex="-1"></a>dtrain <span class="ot">&lt;-</span> <span class="fu">xgb.DMatrix</span>(<span class="at">data =</span> <span class="fu">data.matrix</span>(matrix_predictors.train), <span class="at">label =</span> water_1.train<span class="sc">$</span>Potability)</span>
+<span id="cb70-8"><a href="#cb70-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Test dataset</span></span>
+<span id="cb70-9"><a href="#cb70-9" aria-hidden="true" tabindex="-1"></a>dtest <span class="ot">&lt;-</span> <span class="fu">xgb.DMatrix</span>(<span class="at">data =</span> <span class="fu">data.matrix</span>(matrix_predictors.test), <span class="at">label =</span> water_1.test<span class="sc">$</span>Potability)</span>
+<span id="cb70-10"><a href="#cb70-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb70-11"><a href="#cb70-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Encoding 'Potability' as numeric</span></span>
+<span id="cb70-12"><a href="#cb70-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb70-13"><a href="#cb70-13" aria-hidden="true" tabindex="-1"></a>water_1.train<span class="sc">$</span>Potability <span class="ot">&lt;-</span><span class="fu">as.numeric</span>(<span class="fu">as.factor</span>(water_1.train<span class="sc">$</span>Potability)) <span class="sc">-</span> <span class="dv">1</span> </span>
+<span id="cb70-14"><a href="#cb70-14" aria-hidden="true" tabindex="-1"></a>water_1.test<span class="sc">$</span>Potability <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(<span class="fu">as.factor</span>(water_1.test<span class="sc">$</span>Potability)) <span class="sc">-</span> <span class="dv">1</span> </span>
+<span id="cb70-15"><a href="#cb70-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb70-16"><a href="#cb70-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb70-17"><a href="#cb70-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Recreate the DMatrix objects</span></span>
+<span id="cb70-18"><a href="#cb70-18" aria-hidden="true" tabindex="-1"></a>dtrain <span class="ot">&lt;-</span> <span class="fu">xgb.DMatrix</span>(<span class="at">data =</span> <span class="fu">data.matrix</span>(matrix_predictors.train), <span class="at">label =</span> water_1.train<span class="sc">$</span>Potability)</span>
+<span id="cb70-19"><a href="#cb70-19" aria-hidden="true" tabindex="-1"></a>dtest <span class="ot">&lt;-</span> <span class="fu">xgb.DMatrix</span>(<span class="at">data =</span> <span class="fu">data.matrix</span>(matrix_predictors.test), <span class="at">label =</span> water_1.test<span class="sc">$</span>Potability)</span>
+<span id="cb70-20"><a href="#cb70-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb70-21"><a href="#cb70-21" aria-hidden="true" tabindex="-1"></a><span class="co"># Proceed with training the model</span></span>
+<span id="cb70-22"><a href="#cb70-22" aria-hidden="true" tabindex="-1"></a>watchlist <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">train =</span> dtrain, <span class="at">test =</span> dtest)</span>
+<span id="cb70-23"><a href="#cb70-23" aria-hidden="true" tabindex="-1"></a>param <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">max_depth =</span> <span class="dv">2</span>, <span class="at">eta =</span> <span class="dv">1</span>, <span class="at">nthread =</span> <span class="dv">2</span>,</span>
+<span id="cb70-24"><a href="#cb70-24" aria-hidden="true" tabindex="-1"></a>              <span class="at">objective =</span> <span class="st">"binary:logistic"</span>, <span class="at">eval_metric =</span> <span class="st">"auc"</span>)</span>
+<span id="cb70-25"><a href="#cb70-25" aria-hidden="true" tabindex="-1"></a>model.xgb <span class="ot">&lt;-</span> <span class="fu">xgb.train</span>(param, dtrain, <span class="at">nrounds =</span> <span class="dv">2</span>, watchlist)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] train-auc:0.557079  test-auc:0.547367 
+[2] train-auc:0.626513  test-auc:0.562820 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb72"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb72-1"><a href="#cb72-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Making predictions on the test set</span></span>
+<span id="cb72-2"><a href="#cb72-2" aria-hidden="true" tabindex="-1"></a>preds_test <span class="ot">&lt;-</span> <span class="fu">predict</span>(model.xgb, dtest)</span>
+<span id="cb72-3"><a href="#cb72-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb72-4"><a href="#cb72-4" aria-hidden="true" tabindex="-1"></a><span class="co"># The predictions are probabilities of the positive class.</span></span>
+<span id="cb72-5"><a href="#cb72-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb72-6"><a href="#cb72-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb72-7"><a href="#cb72-7" aria-hidden="true" tabindex="-1"></a>binary_preds_test <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(preds_test <span class="sc">&gt;</span> <span class="fl">0.5</span>, <span class="dv">1</span>, <span class="dv">0</span>)</span>
+<span id="cb72-8"><a href="#cb72-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Confusion Matrix for Test Set</span></span>
+<span id="cb72-9"><a href="#cb72-9" aria-hidden="true" tabindex="-1"></a>conf_matrix_test <span class="ot">&lt;-</span> <span class="fu">confusionMatrix</span>(<span class="fu">as.factor</span>(binary_preds_test), <span class="fu">as.factor</span>(water_1.test<span class="sc">$</span>Potability))</span>
+<span id="cb72-10"><a href="#cb72-10" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(conf_matrix_test)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Confusion Matrix and Statistics
+
+          Reference
+Prediction   0   1
+         0 212 126
+         1  28  37
+                                          
+               Accuracy : 0.6179          
+                 95% CI : (0.5685, 0.6655)
+    No Information Rate : 0.5955          
+    P-Value [Acc &gt; NIR] : 0.1944          
+                                          
+                  Kappa : 0.1221          
+                                          
+ Mcnemar's Test P-Value : 5.432e-15       
+                                          
+            Sensitivity : 0.8833          
+            Specificity : 0.2270          
+         Pos Pred Value : 0.6272          
+         Neg Pred Value : 0.5692          
+             Prevalence : 0.5955          
+         Detection Rate : 0.5261          
+   Detection Prevalence : 0.8387          
+      Balanced Accuracy : 0.5552          
+                                          
+       'Positive' Class : 0               
+                                          </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb74"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb74-1"><a href="#cb74-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculating metrics for the Test Set</span></span>
+<span id="cb74-2"><a href="#cb74-2" aria-hidden="true" tabindex="-1"></a>accuracy_test <span class="ot">&lt;-</span> conf_matrix_test<span class="sc">$</span>overall[<span class="st">'Accuracy'</span>]</span>
+<span id="cb74-3"><a href="#cb74-3" aria-hidden="true" tabindex="-1"></a>recall_test <span class="ot">&lt;-</span> conf_matrix_test<span class="sc">$</span>byClass[<span class="st">'Sensitivity'</span>]</span>
+<span id="cb74-4"><a href="#cb74-4" aria-hidden="true" tabindex="-1"></a>ppv_test <span class="ot">&lt;-</span> conf_matrix_test<span class="sc">$</span>byClass[<span class="st">'Pos Pred Value'</span>]</span>
+<span id="cb74-5"><a href="#cb74-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb74-6"><a href="#cb74-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Printing metrics for the Test Set</span></span>
+<span id="cb74-7"><a href="#cb74-7" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">paste</span>(<span class="st">"Test Set Accuracy is"</span>, accuracy_test))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "Test Set Accuracy is 0.617866004962779"</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb76"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb76-1"><a href="#cb76-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">paste</span>(<span class="st">"Test Set  Recall is"</span>, recall_test))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "Test Set  Recall is 0.883333333333333"</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb78"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb78-1"><a href="#cb78-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">paste</span>(<span class="st">"Test Set PPV is"</span>, ppv_test))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "Test Set PPV is 0.627218934911243"</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb80"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb80-1"><a href="#cb80-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ROC and AUC for the Test Set</span></span>
+<span id="cb80-2"><a href="#cb80-2" aria-hidden="true" tabindex="-1"></a>roc_test <span class="ot">&lt;-</span> <span class="fu">roc</span>(water_1.test<span class="sc">$</span>Potability, preds_test)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Setting levels: control = 0, case = 1</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Setting direction: controls &lt; cases</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb83"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb83-1"><a href="#cb83-1" aria-hidden="true" tabindex="-1"></a>auc_test <span class="ot">&lt;-</span> <span class="fu">auc</span>(water_1.test<span class="sc">$</span>Potability, preds_test)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Setting levels: control = 0, case = 1
+Setting direction: controls &lt; cases</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb85"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb85-1"><a href="#cb85-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">paste</span>(<span class="st">"AUC for Test Set is"</span>, auc_test))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "AUC for Test Set is 0.562819529652352"</code></pre>
+</div>
+</div>
+</section>
+<section id="results" class="level3">
+<h3 class="anchored" data-anchor-id="results">Results</h3>
+<p>We first fit full, null, and reduced models. We measured the reduction of the deviance between the full and reduced models and got a value of 6.33. Since this value is so low, this suggests that Chloramines and Trihalomethanes are better predictors of potability than all of the predictors combined.</p>
+<p>Found no outliers for the studentized residuals for the full and reduced models. Additionally, from plotting both models we see that both the full and reduced models are normally distributed and the residuals for both models are evenly distributed around 0.</p>
+<p>From fitting the full, null and reduced models we are able to see which model has the best fit. We use the ROC/AUC curve to estimate the test accuracy of the model. The AUC value for the reduced model is 0.525 while the full model has an AUC of 0.505.</p>
+<p>We created a confusion matrix for both the full and reduced models. The full and reduced models have a sensitivity of 1 and a specificity of 0. The AIC value for the reduced model is 2173.652 while the AIC value for the full model is 2181.313. The full model had an accuracy of 0.5955 while the reduced model had an accuracy of 0.5955.</p>
+<p>Checked for multicollinearity of both full and reduced models using vif scores. Did not detect multicollinearity in both full and reduced models as values were not between 5 and 10 for predictors.</p>
+<p>Fit a quadratic model for full and reduced variables and created residual plots. From residual plots for both full and reduced quadratic models there was no quadratic relationship between variables since points on residual plots followed a linear pattern.</p>
+<p>Used the CART algorithm to find the best decision tree. This decision tree looked at all of the predictors included in the data set aside from just the organic compounds explored earlier. This way we can see how the other variables affect the classification. The confusion matrix from the classification tree had 151 cases of true negatives and 76 cases of true positives and a misclassification rate of 0.43. After using ranger to train the random forest, the classification tree had a sensitivity of 0.67 and a specificity of 0.640 the tree had a misclassification rate of 0.33 and an accuracy of 0.66.</p>
+<p>From the XG boost the number of true negative cases is 212 and the number of true positives is 37. The sensitivity is 0.88 and the specificity is 0.22. The test accuracy is 0.617, test recall is 0.88, the test set PPV is 0.627. The AUC for the test set is 0.56</p>
+</section>
+<section id="summary-and-conclusion" class="level3">
+<h3 class="anchored" data-anchor-id="summary-and-conclusion">Summary and Conclusion:</h3>
+<p>In our comprehensive investigation, binary logit modeling served as the cornerstone, incorporating full and null logit regression models. Our methodical approach included rigorous outlier detection and multicollinearity assessment, affirming the absence of outliers and successfully mitigating collinearity issues. Despite exploring quadratic relationships, the results indicated their insignificance in our context.</p>
+<p>Between the reduced and full models, the star performer is the full model. This is because while the reduced model has a high AUC value of 0.525 the full model has a higher AIC value of 2182.3. Interestingly the accuracy of both models is the same. Therefore, Trihalomethanes and Chloramines do not seem to be key determinants for water safety, especially when looking at the full model with all of the predictors. However, the decision tree outshines both the reduced and full models. This is because after using random forests and XG boost for the classification tree, the AUC value increases to 0.56 and the test accuracy increases to 0.617. While modest, this outcome represents a meaningful contribution to comprehending the predictive capabilities of these models in discerning water potability. In conclusion, our methodological approach and findings shed light on the nuanced factors influencing water safety, emphasizing the pivotal role of tailored, reduced models in capturing essential predictors for accurate assessments.</p>
+<p>Future work could delve into the specific interactions between all of the predictors on water potability , enhancing comprehension. Including diverse datasets from various sources would bolster model generalizability. Exploring advanced machine learning methods and incorporating real-time data streams could improve predictive accuracy. A cost-benefit analysis and interdisciplinary collaborations would further enrich water safety assessments.</p>
+</section>
+<section id="references" class="level3">
+<h3 class="anchored" data-anchor-id="references">References</h3>
+<ol type="1">
+<li>Ramírez-Castillo, F. Y., Loera-Muro, A., Jacques, M., Garneau, P., Avelar-González, F. J., Harel, J., &amp; Guerrero-Barrera, A. L. (2015). Waterborne Pathogens: Detection Methods and Challenges. Pathogens, 4(2), 307-334. https://doi.org/10.3390/pathogens4020307</li>
+<li>Karasaki, S., Goddard, J. J., Cohen, A., &amp; Ray, I. (2023). Environmental justice and drinking water: A critical review of primary data studies. In WIREs Water (Vol. 10, Issue 5). Wiley. https://doi.org/10.1002/wat2.1653</li>
+<li>Chia, M. Y., Koo, C. H., Huang, Y. F., Di Chan, W., &amp; Pang, J. Y. (2023). Artificial Intelligence Generated Synthetic Datasets as the Remedy for Data Scarcity in Water Quality Index Estimation. In Water Resources Management (Vol. 37, Issue 15, pp.&nbsp;6183–6198). Springer Science and Business Media LLC. https://doi.org/10.1007/s11269-023-03650-6</li>
+<li>Chidiac, S., Najjar, P. E., Ouaini, N., Rayess, Y. E., &amp; Azzi, D. E. (2023). A comprehensive review of water quality indices (WQIs): History, models, attempts and perspectives. Re/Views in Environmental Science and Bio/Technology, 22(2), 349-395.</li>
+</ol>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>
