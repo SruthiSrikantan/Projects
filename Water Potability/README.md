@@ -1,1 +1,1 @@
-In this project we looked at a binary data set for water potability. We also looked at a variety of variables/pollutants which affected potability. 
+In this project we looked at a binary data set for water potability. We also looked at a variety of variables/pollutants which affected potability. We fit null, full, and reduced model to asses which is the best model to fit the data. 
