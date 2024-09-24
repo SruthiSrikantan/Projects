@@ -1,0 +1,271 @@
+---
+title: "Bist Proj"
+author: "Sruthi Srikantan"
+date: "2024-04-13"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+Reading file:
+```{r}
+getwd()
+#package used to read excel file 
+library(readxl)
+#I'm in the data science program. Learned to use dplyr and tidyverse when organizing  large data sets, made the process easier to create contingency tables. 
+library(dplyr)
+library(tidyverse)
+control<-read_excel("Bist_proj_control.xlsx")
+treatment<-read_excel("Bist_proj_treatment.xlsx")
+control <- control |>
+  mutate('Age on admission' = str_replace(`Age on admission`, " days", ""))
+control_1<-control|>
+  select(`Age on admission`, Weight, `Total bilirubin`, `Direct bilirubin`, Hemoglobin, `Reticulocyte count`, Urea, Creatinine)|>
+  mutate(type="control")
+treatment_1<-treatment|>
+  select(`Age on admission`, Weight, `Total bilirubin`, `Direct bilirubin`, Hemoglobin, `Reticulocyte count`, Urea, Creatinine)|>
+  mutate(type="treatment")
+combined_df <- rbind(control_1, treatment_1)
+
+```
+Separating control and treatment
+```{r}
+#separating by treatment and control
+control_df <- combined_df[combined_df$type == "control", ]
+treatment_df <- combined_df[combined_df$type == "treatment", ]
+```
+Mean and standard deviation of treatment Table 1
+```{r}
+Age_mean_treat<-mean(treatment_df$`Age on admission`)
+Age_sd_treat<-sd(treatment_df$`Age on admission`)
+
+Weight_mean_treat<-mean(treatment_df$Weight)
+Weight_sd_treat<-sd(treatment_df$Weight)
+
+Tbili_mean_treat<-mean(treatment_df$`Total bilirubin`)
+Tbili_sd_treat<-sd(treatment_df$`Total bilirubin`)
+
+Dbili_mean_treat<-mean(treatment_df$`Direct bilirubin`)
+Dbili_sd_treat<-sd(treatment_df$`Direct bilirubin`)
+
+Hem_mean_treat<-mean(treatment_df$Hemoglobin)
+Hem_sd_treat<-sd(treatment_df$Hemoglobin)
+
+Reti_mean_treat<-mean(treatment_df$`Reticulocyte count`)
+Reti_sd_treat<-sd(treatment_df$`Reticulocyte count`)
+
+Urea_mean_treat<-mean(treatment_df$Urea)
+Urea_sd_treat<-sd(treatment_df$Urea)
+
+Crea_mean_treat<-mean(treatment_df$Creatinine)
+Crea_sd_treat<-sd(treatment_df$Creatinine)
+
+```
+Mean and standard deviation of control Table 1 
+```{r}
+Age_mean_cont<-mean(control_df$`Age on admission`)
+Age_sd_cont<-sd(control_df$`Age on admission`)
+
+Weight_mean_cont<-mean(control_df$Weight)
+Weight_sd_cont<-sd(control_df$Weight)
+
+Tbili_mean_cont<-mean(control_df$`Total bilirubin`)
+Tbili_sd_cont<-sd(control_df$`Total bilirubin`)
+
+Dbili_mean_cont<-mean(control_df$`Direct bilirubin`)
+Dbili_sd_cont<-sd(control_df$`Direct bilirubin`)
+
+Hem_mean_cont<-mean(control_df$Hemoglobin)
+Hem_sd_cont<-sd(control_df$Hemoglobin)
+
+Reti_mean_cont<-mean(control_df$`Reticulocyte count`)
+Reti_sd_cont<-sd(control_df$`Reticulocyte count`)
+
+Urea_mean_cont<-mean(control_df$Urea)
+Urea_sd_cont<-sd(control_df$Urea)
+
+Crea_mean_cont<-mean(control_df$Creatinine)
+Crea_sd_cont<-sd(control_df$Creatinine)
+
+```
+Chi squared test on treatment and control Table 1 
+```{r}
+library(stats)
+# Create R X C table
+Age<-table(combined_df$type, combined_df$`Age on admission`)
+Weight<-table(combined_df$type, combined_df$Weight)
+T_bili<-table(combined_df$type, combined_df$`Total bilirubin`)
+D_bili<-table(combined_df$type, combined_df$`Direct bilirubin`)
+Hem<-table(combined_df$type, combined_df$Hemoglobin)
+Reti<-table(combined_df$type, combined_df$`Reticulocyte count`)
+Urea<-table(combined_df$type, combined_df$Urea)
+Crea<-table(combined_df$type, combined_df$Creatinine)
+# Apply chi square test
+combined_df$`Age on admission` <- as.numeric(combined_df$`Age on admission`)
+chisq.test(Age)
+chisq.test(Weight)
+chisq.test(T_bili)
+chisq.test(D_bili)
+chisq.test(Hem)
+chisq.test(Reti)
+chisq.test(Urea)
+chisq.test(Crea)
+```
+Organizing data for negative/positive UTI cases Table 3.1 
+```{r}
+treatment_2<-treatment|>
+  select(`Age on admission`, Weight, `Total bilirubin`, `Direct bilirubin`, Hemoglobin, `Reticulocyte count`, Urea, Creatinine, `Urine Culture`, Sex, `Maternal history`)
+#seperating dataset to groups a and b. Useful when calculating mean and standard deviations
+group_a<-treatment_2[!is.na(treatment_2$`Urine Culture`), ]
+group_b<-treatment_2[is.na(treatment_2$`Urine Culture`), ]
+#combining dataset
+combined_df_2 <- rbind(group_a, group_b)
+# Adding UTI column to indicate positive and negative cases. Positive cases are indicated by the presence of bacteria in the urine culture column. negative cases had NA rows in this column. All positive cases were in the first 11 rows.
+combined_df_2<-combined_df_2|>
+   mutate(UTI="Negative")|>
+  mutate(UTI = ifelse(row_number() <= 11, "Positive", "Negative"))
+#finally selected for specific columns in final dataset
+combined_df_2<-combined_df_2 |>
+  select(`Age on admission`, Weight, `Total bilirubin`, `Direct bilirubin`, Hemoglobin, `Reticulocyte count`, Urea, Creatinine, UTI, Sex, `Maternal history`)
+```
+Mean and standard deviation of group a Table 3.1
+```{r}
+#group a 
+Age_mean_a<-mean(group_a$`Age on admission`)
+Age_sd_a<-sd(group_a$`Age on admission`)
+
+Weight_mean_a<-mean(group_a$Weight)
+Weight_sd_a<-sd(group_a$Weight)
+
+Tbili_mean_a<-mean(group_a$`Total bilirubin`)
+Tbili_sd_a<-sd(group_a$`Total bilirubin`)
+
+Dbili_mean_a<-mean(group_a$`Direct bilirubin`)
+Dbili_sd_a<-sd(group_a$`Direct bilirubin`)
+
+Hem_mean_a<-mean(group_a$Hemoglobin)
+Hem_sd_a<-sd(group_a$Hemoglobin)
+
+Reti_mean_a<-mean(group_a$`Reticulocyte count`)
+Reti_sd_a<-sd(group_a$`Reticulocyte count`)
+
+Urea_mean_a<-mean(group_a$Urea)
+Urea_sd_a<-sd(group_a$Urea)
+
+Crea_mean_a<-mean(group_a$Creatinine)
+Crea_sd_a<-sd(group_a$Creatinine)
+```
+Mean and standard deviation of group b Table 3.1 
+```{r}
+#group b
+Age_mean_b<-mean(group_b$`Age on admission`)
+Age_sd_b<-sd(group_b$`Age on admission`)
+
+Weight_mean_b<-mean(group_b$Weight)
+Weight_sd_b<-sd(group_b$Weight)
+
+Tbili_mean_b<-mean(group_b$`Total bilirubin`)
+Tbili_sd_b<-sd(group_b$`Total bilirubin`)
+
+Dbili_mean_b<-mean(group_b$`Direct bilirubin`)
+Dbili_sd_b<-sd(group_b$`Direct bilirubin`)
+
+Hem_mean_b<-mean(group_b$Hemoglobin)
+Hem_sd_b<-sd(group_b$Hemoglobin)
+
+Reti_mean_b<-mean(group_b$`Reticulocyte count`)
+Reti_sd_b<-sd(group_b$`Reticulocyte count`)
+
+Urea_mean_b<-mean(group_b$Urea)
+Urea_sd_b<-sd(group_b$Urea)
+
+Crea_mean_b<-mean(group_b$Creatinine)
+Crea_sd_b<-sd(group_b$Creatinine)
+```
+
+Chi square test on treatment group with negative/positive UTI cases Table 3.1 
+```{r}
+# Create R X C table
+Age_2<-table(combined_df_2$UTI, combined_df_2$`Age on admission`)
+Weight_2<-table(combined_df_2$UTI, combined_df_2$Weight)
+T_bili_2<-table(combined_df_2$UTI, combined_df_2$`Total bilirubin`)
+D_bili_2<-table(combined_df_2$UTI, combined_df_2$`Direct bilirubin`)
+Hem_2<-table(combined_df_2$UTI, combined_df_2$Hemoglobin)
+Reti_2<-table(combined_df_2$UTI, combined_df_2$`Reticulocyte count`)
+Urea_2<-table(combined_df_2$UTI, combined_df_2$Urea)
+Crea_2<-table(combined_df_2$UTI, combined_df_2$Creatinine)
+
+# Apply chi square test
+chisq.test(Age_2)
+chisq.test(Weight_2)
+chisq.test(T_bili_2)
+chisq.test(D_bili_2)
+chisq.test(Hem_2)
+chisq.test(Reti_2)
+chisq.test(Urea_2)
+chisq.test(Crea_2)
+
+```
+
+Fisher's Exact Test by Sex Table 3.2 
+```{r}
+sex_UTI<-table(combined_df_2$Sex, combined_df_2$UTI)
+UTI<-fisher.test(sex_UTI)
+```
+Figure 3.2 Sex by UTI
+```{r}
+#Counts by sex
+M<-sum(group_a$Sex=="male")
+F<-sum(group_a$Sex=="female")
+M_2<-sum(group_b$Sex=="male")
+F_2<-sum(group_b$Sex=="female")
+#creating figure 
+matrix(
+  c(M, F, (M/11)*100, (F/11)*100, M_2, F_2, (M_2/89)*100, (F_2/89)*100),  
+  ncol= 4,
+  byrow = FALSE,  
+  dimnames = list(
+    c("Male", "Female"),  
+    c("No", "%", "No", "%")  
+  )
+)
+cat("FE_pval:", UTI$p.value, "\n")
+
+```
+Maternal Infection counts by Group A + Group B Table 3.3
+```{r}
+#Group A
+N<-sum(group_a$`Maternal history`=="negative")
+U<-sum(grepl("^U", group_a$`Maternal history`))
+P<-sum(group_a$`Maternal history`=="PROM")
+
+#Group_b
+N_2<-sum(group_b$`Maternal history`=="negative")
+U_2<-sum(grepl("^U", group_b$`Maternal history`))
+P_2<-sum(group_b$`Maternal history`=="PROM")
+
+
+```
+Fisher's Exact Test by Maternal infection Table 3.3
+```{r}
+MI_UTI<-table(combined_df_2$`Maternal history`, combined_df_2$UTI)
+FE_2<-fisher.test(MI_UTI)
+```
+Figure 3.3  Maternal Infection
+```{r}
+ matrix(
+  c(N, U, P, (N/11)*100, (U/11)*100, (P/11)*100, N_2, U_2, P_2, (N_2/89)*100, (U_2/89)*100, (P_2/89)*100),  
+  ncol= 4,
+  byrow = FALSE,  
+  dimnames = list(
+    c("Negative", "UTI", "PROM"),  
+    c("No", "%", "No", "%")  
+  )
+)
+
+cat("FE_pval:", FE_2$p.value, "\n")
+
+```
+
